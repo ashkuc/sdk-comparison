@@ -1,23 +1,48 @@
-import './style.css'
-import typescriptLogo from './typescript.svg'
-import { setupCounter } from './counter'
+import { Sdk } from '@unique-nft/sdk';
+import { Account } from '@unique-nft/sr25519'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+// @ts-ignore
+let prevTime = window.now || Date.now();
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const logTime = (label = 'no label') => {
+    const now = Date.now();
+    console.log(`${now - prevTime}: ${label}`);
+    prevTime = now;
+};
+
+const ALICE = '//Alice';
+const BOB_ADDRESS = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
+const AMOUNT = 10000;
+const ENDPOINT = 'https://rest.dev.uniquenetwork.dev/v1';
+
+const main = async () => {
+    logTime('main() start');
+
+    const alice = Account.fromUri(ALICE)
+
+    logTime('Alice account ready');
+
+    const sdk = new Sdk({ baseUrl: ENDPOINT });
+
+    logTime('sdk initialized');
+
+    const [{ freeBalance: { formatted } }, { nonce }] = await Promise.all([
+        sdk.balance.get({ address: alice.address }),
+        sdk.common.getNonce({ address: alice.address }),
+    ]);
+
+    console.log(`Alice has a balance of ${formatted}, nonce ${nonce}`);
+
+    logTime('Alice data retrieved');
+
+    const tx = await sdk.balance.transfer.submit(
+        { address: alice.address, amount: AMOUNT, destination: BOB_ADDRESS },
+        { signer: alice.signer },
+    );
+
+    logTime('transfer sent');
+
+    console.log(`Transfer sent with hash ${tx.hash}`);
+}
+
+main().catch(console.error);

@@ -11,5 +11,9 @@
   "devDependencies": {
     "typescript": "^4.9.3",
     "vite": "^4.1.0"
+  },
+  "dependencies": {
+    "@unique-nft/sdk": "^0.2.5",
+    "@unique-nft/sr25519": "^0.0.0"
   }
 }
