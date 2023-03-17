@@ -9,9 +9,7 @@ function log(...args) {
     textarea.value += '\n';
 }
 
-async function runSample(sample: Sample): Promise<void> {
-    let time = Date.now();
-
+async function runSample(sample: Sample, time = Date.now()): Promise<void> {
     await sample.initialized();
 
     log(`Sample initialized in ${Date.now() - time}ms`);
@@ -38,7 +36,7 @@ document.querySelector('#polkadot').addEventListener('click', async function () 
     const now = Date.now();
     const { PolkadotSample } = (await import('./polkadot.sample'));
 
-    await runSample(new PolkadotSample());
+    await runSample(new PolkadotSample(), now);
 
     log(`Total time: ${Date.now() - now}ms`);
 }, false);
@@ -48,6 +46,6 @@ document.querySelector('#sdk').addEventListener('click', async function () {
     const now = Date.now();
     const { SdkSample } = (await import('./sdk.sample'));
 
-    await runSample(new SdkSample());
+    await runSample(new SdkSample(), now);
     log(`Total time: ${Date.now() - now}ms`);
 }, false);
