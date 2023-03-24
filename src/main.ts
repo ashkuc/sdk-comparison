@@ -33,6 +33,7 @@ async function runSample(sample: Sample, time = Date.now()): Promise<void> {
 
 document.querySelector('#polkadot').addEventListener('click', async function () {
     log();
+    log('Polkadot');
     const now = Date.now();
     const { PolkadotSample } = (await import('./polkadot.sample'));
 
@@ -43,6 +44,7 @@ document.querySelector('#polkadot').addEventListener('click', async function () 
 
 document.querySelector('#sdk').addEventListener('click', async function () {
     log();
+    log('SDK');
     const now = Date.now();
     const { SdkSample } = (await import('./sdk.sample'));
 
